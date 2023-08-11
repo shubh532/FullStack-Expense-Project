@@ -8,6 +8,10 @@ SignUpBtn.onclick= async (e)=>{
         email:document.forms["userForm"]["email"].value,
         password:document.forms["userForm"]["password"].value,
     }
-    const Response= await axios.post("http://localhost:4000/expense-authencation",{...SignUpData})
-    console.log(Response,"Response")
+    try{
+        const Response= await axios.post("http://localhost:4000/expense-authencation",{...SignUpData})
+        console.log(Response,"Response")
+    }catch(err){
+        console.log(err,"Errror")
+    }
 }
