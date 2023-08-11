@@ -14,22 +14,24 @@
 <body class="body">
     <div class="formContainer">
         <h1 class="heading">Sign Up</h1>
-        <form>
+        <form name="userForm">
             <div class="inpcontainer">
-                <label>Name</label>
-                <input type="text" required />
+                <label for="name">Name</label>
+                <input type="text" name="name" required />
             </div>
             <div class="inpcontainer">
-                <label>Email</label>
-                <input type="email" required />
+                <label for="email">Email</label>
+                <input type="email" name="email" required />
             </div>
             <div class="inpcontainer">
-                <label>Password</label>
-                <input type="password" required />
+                <label for="password">Password</label>
+                <input type="password" name="password" required />
             </div>
-            <button class="signupBtn">Sign Up</button>
+            <button id="SignUpBtn" class="signupBtn">Sign Up</button>
         </form>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="SignUp.js"></script>
 </body>
 
 </html>
