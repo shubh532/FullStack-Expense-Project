@@ -12,7 +12,7 @@ LoginBtn.onclick = async (e) => {
         console.log(Response, "Response")
         alert(Response.data.message)
     } catch (err) {
-        if (err.response.status === 401) {
+        if (err.response.status === 400 || err.response.status === 404) {
             alert(err.response.data.message)
         } else if (err.response.status === 500) {
             alert("Server Error")

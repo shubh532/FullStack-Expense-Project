@@ -1,0 +1,202 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+
+.main {
+    height: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 2.5rem 6rem 36rem;
+}
+
+.upperdiv {
+    /* border: 2px solid red; */
+}
+
+.middlediv {
+    /* border: 2px solid blue; */
+}
+
+.lowerdiv {
+    overflow: auto;
+    padding: 5px;
+}
+
+.header {
+    text-align: center;
+    width: 100%;
+}
+
+.Expenesform {
+    background-color: rgb(109, 178, 218);
+    color: aliceblue;
+    height: 100%;
+    width: 100%;
+}
+
+.Expenesform form {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.inpcontainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    margin: 1rem;
+    width: 25%;
+}
+
+.inpcontainer input {
+    border: 1px solid rgb(111, 111, 111);
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.inpcontainer input:focus {
+    box-shadow: 0px 0px 5px 1px rgb(51, 51, 51);
+    outline: none;
+}
+
+.signupBtn {
+    color: aliceblue;
+    padding: 10px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0.5rem 0px;
+    transition: linear 0.3s;
+    background-color: rgb(43, 151, 120);
+    border: none;
+    border-radius: 4px;
+}
+
+.signupBtn:hover {
+    background-color: rgb(0, 203, 145);
+    box-shadow: 0px 0px 2px 1px rgb(124, 124, 124);
+}
+
+.tableContainer {
+    margin: auto;
+    border: 2px solid rgb(155, 155, 155);
+    overflow-y: auto;
+    width: 50%;
+    height: 100%;
+    overflow: auto;
+
+}
+
+.tableContainer table {
+    width: 100%;
+}
+
+.tableContainer table thead {
+    background-color: rgb(109, 178, 218);
+    color: aliceblue;
+    position: sticky;
+    top:0px;
+}
+
+.tableContainer table,
+th,
+td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 2px;
+}
+
+.btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.btns button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: linear 0.2s;
+}
+
+.btns .delbtn {
+    background-color: rgb(255, 141, 141);
+    color: aliceblue;
+}
+
+.btns .Editbtn {
+    background-color: rgb(100, 165, 138);
+    color: aliceblue;
+}
+
+.btns .Editbtn:hover {
+    background-color: rgb(0, 147, 86);
+    box-shadow: 5px 5px 5px 1px rgb(159, 159, 159);
+}
+
+.btns .delbtn:hover {
+    background-color: rgb(255, 65, 65);
+    box-shadow: 5px 5px 5px 1px rgb(159, 159, 159);
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+    background-color: rgb(180, 197, 234);
+}
+
+@media only screen and (max-width: 768px) {
+    body{
+        height: 100vh;
+    }
+    .main {
+        grid-template-rows: 2.5rem 16rem auto;
+    
+    }
+    .tableContainer {
+        width: 100%;
+        font-size: 1px;
+        height: 100%;
+    }
+
+    .Expenesform form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .inpcontainer {
+        width: 80%;
+        margin: 5px;
+    }
+}
+
+
+@media only screen and (min-width: 992px) {
+    .tableContainer {
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .tableContainer {
+        width: 30%;
+    }
+}

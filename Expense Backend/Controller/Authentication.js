@@ -36,10 +36,10 @@ exports.postLoginData = async (req, res, next) => {
     // console.log(email, password,"sdfhbsjdfsjd")
     try {
         const existUser = await ExpAuthData.findOne({ where: { email } })
-        const hash = existUser.password
         if (!existUser) {
-            res.status(404).json({ message: "Email Not Exist" })
+            res.status(404).json({ message: "Email Not Exist", success: false })
         } else {
+            const hash = existUser.password
             bcrypt.compare(password, hash, (err, result) => {
                 if (err) {
                     throw new Error({ message: "Somthing Went Wrong" })
@@ -47,7 +47,7 @@ exports.postLoginData = async (req, res, next) => {
                 if (result) {
                     res.status(200).json({ message: "Successfully Login", success: true })
                 } else {
-                    res.status(400).json({ message: "Incorrect Password ", success: true })
+                    res.status(400).json({ message: "Incorrect Password ", success: false })
                 }
             })
         }

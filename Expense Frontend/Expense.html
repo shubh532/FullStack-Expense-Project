@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="Expense.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="main">
+        <div class="upperdiv">
+            <div class="header">
+                <h2>Welcome to Expense Tracker</h2>
+            </div>
+        </div>
+        <div class="middlediv">
+            <div class="Expenesform">
+                <form name="expenseform">
+                    <div class="inpcontainer">
+                        <label for="amount">Amount</label>
+                        <input type="number" name="amount" placeholder="amount you spent?" />
+                    </div>
+                    <div class="inpcontainer">
+                        <label for="description">Description</label>
+                        <input type="text" name="description" placeholder="add descriptio" />
+                    </div>
+                    <div class="inpcontainer">
+                        <label for="category">Category</label>
+                        <select name="category">
+                            <option value="Grocery">Grocery</option>
+                            <option value="Food">Food</option>
+                            <option value="Fuel">Fuel</option>
+                            <option value="Medical">Medical</option>
+                        </select>
+                    </div>
+                    <button id="AddBtn" class="signupBtn">Add Expense</button>
+                </form>
+            </div>
+        </div>
+        <div class="lowerdiv">
+            <div class="tableContainer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="Expense.js"></script>
+</body>
+
+</html>

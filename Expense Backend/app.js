@@ -3,6 +3,7 @@ const bodyparser = require('body-parser')
 const cors = require("cors")
 
 const Routes = require("./Routes/AuthRoutes")
+const ExpenseRoutes =require('./Routes/ExpenseRoutes')
 const Authsequelize = require("./Util/Database")
 const app = express()
 
@@ -10,6 +11,7 @@ app.use(cors())
 app.use(bodyparser.json())
 
 app.use(Routes)
+app.use(ExpenseRoutes)
 
 
 Authsequelize.sync()

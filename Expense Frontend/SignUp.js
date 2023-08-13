@@ -11,7 +11,10 @@ SignUpBtn.onclick= async (e)=>{
     try{
         const Response= await axios.post("http://localhost:4000/expense-authencation",{...SignUpData})
         console.log(Response,"Response")
+        alert(Response.data.message)
+
     }catch(err){
+        alert(err.response.data.message)
         console.log(err,"Errror")
     }
 }
