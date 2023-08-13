@@ -1,7 +1,11 @@
-const ExpAuthData = require("../Model/ExpAuth")
+const ExpAuthData = require("../Model/User")
 const bcrypt = require("bcrypt")
 const saltRounds = 10
+const jwt=require("jsonwebtoken")
 
+function generateAccessToken(id,name){
+    return jwt.sign({userId:id, name:name}, "QWERTYUIOPASDFGHJKLMNBVCXZ!#@$%^&*147852369")
+}
 
 exports.postAuthData = async (req, res, next) => {
     const Name = req.body.name
@@ -16,12 +20,12 @@ exports.postAuthData = async (req, res, next) => {
                 if (err) {
                     throw new Error("Somthing Wnet wrong")
                 } else {
-                    const Data = await ExpAuthData.create({
+                    const User = await ExpAuthData.create({
                         Name: Name,
                         email: email,
                         password: hash
                     })
-                    res.status(201).json({ message: "User Register Successfully" })
+                    res.status(201).json({ message: "User Register Successfully", user:User })
                 }
             })
         }
@@ -35,17 +39,17 @@ exports.postLoginData = async (req, res, next) => {
     const password = req.body.password
     // console.log(email, password,"sdfhbsjdfsjd")
     try {
-        const existUser = await ExpAuthData.findOne({ where: { email } })
-        if (!existUser) {
+        const User = await ExpAuthData.findOne({ where: { email } })
+        if (!User) {
             res.status(404).json({ message: "Email Not Exist", success: false })
         } else {
-            const hash = existUser.password
+            const hash = User.password
             bcrypt.compare(password, hash, (err, result) => {
                 if (err) {
                     throw new Error({ message: "Somthing Went Wrong" })
                 }
                 if (result) {
-                    res.status(200).json({ message: "Successfully Login", success: true })
+                    res.status(200).json({ message: "Successfully Login", success: true, user:User, tokenId:generateAccessToken(User.id,User.Name) })
                 } else {
                     res.status(400).json({ message: "Incorrect Password ", success: false })
                 }

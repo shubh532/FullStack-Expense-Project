@@ -1,5 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
-    axios.get("http://localhost:4000/getExpense_data")
+    const tokenId= localStorage.getItem("tokenId")
+    axios.get("http://localhost:4000/getExpense_data",{headers:{"Authorization":tokenId}})
         .then((response) => {
             const Data = response.data
             for (key in Data) {
@@ -14,15 +15,18 @@ window.addEventListener("DOMContentLoaded", () => {
 const AddBtn = document.getElementById("AddBtn")
 AddBtn.onclick = async (e) => {
     e.preventDefault()
+    const userId= localStorage.getItem("userId")
     let ExpnseData = {
         Amount: document.forms["expenseform"]["amount"].value,
         Description: document.forms["expenseform"]["description"].value,
         Category: document.forms["expenseform"]["category"].value,
+        userId:userId
     }
     try {
         console.log(ExpnseData)
         const response = await axios.post("http://localhost:4000/postExpense", { ...ExpnseData })
         data=response.data.dataValues
+        console.log(response)
         AddDataToTable(data)
     } catch (err) {
         alert(err.response.data.message)

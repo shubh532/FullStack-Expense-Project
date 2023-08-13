@@ -2,7 +2,7 @@ const Sequelize =require("sequelize")
 
 const sequelize = require("../Util/Database")
 
-const ExpAuthData=sequelize.define("expenseAuth",{
+const User=sequelize.define("user",{
     id:{
         type:Sequelize.UUID,
         allowNull:false,
@@ -24,4 +24,4 @@ const ExpAuthData=sequelize.define("expenseAuth",{
     }
 });
 
-module.exports=ExpAuthData
+module.exports=User

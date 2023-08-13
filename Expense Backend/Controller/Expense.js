@@ -2,8 +2,9 @@ const ExpenseData = require("../Model/Expense")
 
 
 exports.getData = async (req, res, next) => {
+    console.log("req use>>>>>>>",req.user)
     try {
-        const Data = await ExpenseData.findAll()
+        const Data = await ExpenseData.findAll({where:{userId:req.user.id}})
         res.status(200).json({ ...Data })
         // res.send("Working fi")
     } catch (err) {
@@ -12,13 +13,14 @@ exports.getData = async (req, res, next) => {
 }
 
 exports.postExpnseData = async (req, res, next) => {
-    const { Amount, Description, Category } = req.body
+    const { Amount, Description, Category,userId } = req.body
     try {
         console.log(Amount, Description, Category, "Amount, Description, Category")
         const Data = await ExpenseData.create({
             Amount: Amount,
             Description: Description,
-            Category: Category
+            Category: Category,
+            userId:userId
         })
         console.log(Data)
         res.status(201).json({ ...Data, success: true, message: "Successfully Added" })

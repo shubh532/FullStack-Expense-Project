@@ -1,7 +1,8 @@
 const express = require("express")
 const bodyparser = require('body-parser')
 const cors = require("cors")
-
+const User = require("./Model/User")
+const Expense = require('./Model/Expense')
 const Routes = require("./Routes/AuthRoutes")
 const ExpenseRoutes =require('./Routes/ExpenseRoutes')
 const Authsequelize = require("./Util/Database")
@@ -13,7 +14,8 @@ app.use(bodyparser.json())
 app.use(Routes)
 app.use(ExpenseRoutes)
 
-
+User.hasMany(Expense)
+Expense.belongsTo(User)
 Authsequelize.sync()
     .then(app.listen(4000, 'localhost', () => {
         console.log("click on http://localhost:4000")
