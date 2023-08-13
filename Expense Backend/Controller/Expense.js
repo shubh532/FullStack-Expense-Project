@@ -27,3 +27,16 @@ exports.postExpnseData = async (req, res, next) => {
         res.status(500).json({ message: "Server Error" })
     }
 }
+
+exports.deleteExpenseData = async (req, res, next) => {
+    const id = req.params.id
+    console.log(id,"sdsfs")
+    try {
+        const data = await ExpenseData.findOne({ where: { id: id } })
+        data.destroy()
+        res.status(200).json({message:"Data Deleted"})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({message:"Server Error"})
+    }
+}
