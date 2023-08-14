@@ -56,6 +56,7 @@ exports.postLoginData = async (req, res, next) => {
             })
         }
     } catch (err) {
+        console.log(err,"from login route")
         res.status(500).json({ message: "Error Occurred while Login", error: err.message })
     }
 }

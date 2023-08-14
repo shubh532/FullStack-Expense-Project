@@ -2,7 +2,7 @@ const ExpenseData = require("../Model/Expense")
 
 
 exports.getData = async (req, res, next) => {
-    console.log("req use>>>>>>>",req.user)
+    // console.log("req use>>>>>>>",req.user)
     try {
         const Data = await ExpenseData.findAll({where:{userId:req.user.id}})
         res.status(200).json({ ...Data })

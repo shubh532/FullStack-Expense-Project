@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", () => {
-    const tokenId= localStorage.getItem("tokenId")
-    axios.get("http://localhost:4000/getExpense_data",{headers:{"Authorization":tokenId}})
+    const tokenId = localStorage.getItem("tokenId")
+    axios.get("http://localhost:4000/getExpense_data", { headers: { "Authorization": tokenId } })
         .then((response) => {
             const Data = response.data
             for (key in Data) {
@@ -15,17 +15,17 @@ window.addEventListener("DOMContentLoaded", () => {
 const AddBtn = document.getElementById("AddBtn")
 AddBtn.onclick = async (e) => {
     e.preventDefault()
-    const userId= localStorage.getItem("userId")
+    const userId = localStorage.getItem("userId")
     let ExpnseData = {
         Amount: document.forms["expenseform"]["amount"].value,
         Description: document.forms["expenseform"]["description"].value,
         Category: document.forms["expenseform"]["category"].value,
-        userId:userId
+        userId: userId
     }
     try {
         console.log(ExpnseData)
         const response = await axios.post("http://localhost:4000/postExpense", { ...ExpnseData })
-        data=response.data.dataValues
+        data = response.data.dataValues
         console.log(response)
         AddDataToTable(data)
     } catch (err) {
@@ -34,7 +34,7 @@ AddBtn.onclick = async (e) => {
 }
 
 function AddDataToTable(data) {
-    let tbody=document.getElementById("tbody")
+    let tbody = document.getElementById("tbody")
     let tr = document.createElement("tr")
     let td = [
         document.createElement("td"),
@@ -47,29 +47,60 @@ function AddDataToTable(data) {
     EditBtn.textContent = "Edit"
     let DelBtn = document.createElement("button")
     DelBtn.textContent = "Delete"
-    DelBtn.className="delbtn"
-    EditBtn.className="Editbtn"
+    DelBtn.className = "delbtn"
+    EditBtn.className = "Editbtn"
     td[0].textContent = data.Amount
     td[1].textContent = data.Description
     td[2].textContent = data.Category
     td[3].appendChild(EditBtn)
     td[3].appendChild(DelBtn)
-    td[3].className="btns"
+    td[3].className = "btns"
     td.forEach((ele) => {
         tr.appendChild(ele)
     })
     tbody.insertBefore(tr, tbody.firstChild)
-    DelBtn.onclick=()=>deletehandler(data.id, "tbody", tr)
+    DelBtn.onclick = () => deletehandler(data.id, "tbody", tr)
 }
 
-async function deletehandler(id, parenteId, ele ){
-    try{
+async function deletehandler(id, parenteId, ele) {
+    try {
         const response = await axios.delete(`http://localhost:4000/deleteExpense/${id}`)
-        if (response.status===200){
+        if (response.status === 200) {
             console.log(response)
-        document.getElementById(parenteId).removeChild(ele)
+            document.getElementById(parenteId).removeChild(ele)
         }
-    }catch(err){
+    } catch (err) {
         alert(err.response.data.message)
     }
+}
+
+const PremiumBtn = document.getElementById("premiumBtn")
+
+PremiumBtn.onclick = async (e) => {
+    const tokenId = localStorage.getItem("tokenId")
+    const response = await axios.get("http://localhost:4000/purchase/premiummembership", { headers: { "Authorization": tokenId } })
+
+    var options = {
+        "key": response.data.key_id,
+        "order_id": response.data.order.id,
+        "handler": async function (response) {
+            axios.post("http://localhost:4000/purchase/updatetransactionstatus", {
+                order_id: options.order_id,
+                payment_id: response.razorpay_payment_id
+            }, { headers: { "Authorization": tokenId } })
+            alert("Your Are Premium Member Now")
+        }
+
+    }
+    const rzp1 = new Razorpay(options)
+    rzp1.open()
+    e.preventDefault()
+
+    rzp1.on("payment.failed", async (response) => {
+        const order_id = response.error.metadata.order_id
+        const payment_id = response.error.metadata.payment_id
+        await axios.post("http://localhost:4000/purchase/failedpayment", { order_id: order_id, payment_id: payment_id }, { headers: { "Authorization": tokenId } })
+
+        alert("PAYMENT FAILED ..!!!")
+    })
 }
