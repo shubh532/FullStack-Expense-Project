@@ -1,0 +1,65 @@
+.logo.is-animetion span {
+    display: inline-block;
+    animation: wave-text 3s ease-in-out infinite;
+}
+
+.logo.is-animetion {
+    .span1 {
+        animation-delay: 0.0s;
+    }
+
+    .span2 {
+        animation-delay: 0.1s;
+    }
+
+    .span3 {
+        animation-delay: 0.2s;
+    }
+
+    .span4 {
+        animation-delay: 0.3s;
+    }
+
+    .span5 {
+        animation-delay: 0.4s;
+    }
+
+    .span6 {
+        animation-delay: 0.5s;
+    }
+
+    .span7 {
+        animation-delay: 0.6s;
+    }
+
+    .span8 {
+        animation-delay: 0.7s;
+    }
+
+    .span9 {
+        animation-delay: 0.8s;
+    }
+
+    .span10 {
+        animation-delay: 0.9s;
+    }
+
+    .span11 {
+        animation-delay: 1s;
+    }
+}
+
+
+@keyframes wave-text {
+    00% {
+        transform: translateY(0em);
+    }
+
+    50% {
+        transform: translateY(-1em);
+    }
+
+    100% {
+        transform: translateY(0em);
+    }
+}

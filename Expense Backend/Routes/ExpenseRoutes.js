@@ -7,5 +7,7 @@ const ExpnseController = require("../Controller/Expense")
 ExpenseRoutes.get("/getExpense_data", Authentication, ExpnseController.getData)
 ExpenseRoutes.post("/postExpense", ExpnseController.postExpnseData)
 ExpenseRoutes.delete("/deleteExpense/:id", ExpnseController.deleteExpenseData)
+ExpenseRoutes.get("/leaderBoard", ExpnseController.LeaderBoardData)
+
 
 module.exports = ExpenseRoutes
