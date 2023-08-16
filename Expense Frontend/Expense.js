@@ -54,6 +54,8 @@ const AddBtn = document.getElementById("AddBtn")
 AddBtn.onclick = async (e) => {
     e.preventDefault()
     const userId = localStorage.getItem("userId")
+    const tokenId = localStorage.getItem("tokenId")
+
     let ExpnseData = {
         Amount: document.forms["expenseform"]["amount"].value,
         Description: document.forms["expenseform"]["description"].value,
@@ -62,7 +64,7 @@ AddBtn.onclick = async (e) => {
     }
     try {
         console.log(ExpnseData)
-        const response = await axios.post("http://localhost:4000/postExpense", { ...ExpnseData })
+        const response = await axios.post("http://localhost:4000/postExpense", { ...ExpnseData },{ headers: { "Authorization": tokenId } })
         data = response.data.dataValues
         console.log(response)
         AddDataToTable(data)
@@ -173,7 +175,7 @@ const AddRowToTable=(data, Rank)=>{
         document.createElement("td"),
     ]
     td[0].textContent = Rank
-    td[1].textContent = data.name
+    td[1].textContent = data.Name
     td[2].textContent = `${data.totalAmount}`
     td.forEach((ele) => {
         tr.appendChild(ele)

@@ -19,14 +19,24 @@ exports.getData = async (req, res, next) => {
 
 exports.postExpnseData = async (req, res, next) => {
     const { Amount, Description, Category, userId } = req.body
+    const prevTotal=req.user.totalAmount
+    const totalAmount=Number(prevTotal)+Number(Amount)
     try {
-        console.log(Amount, Description, Category, "Amount, Description, Category")
         const Data = await ExpenseData.create({
             Amount: Amount,
             Description: Description,
             Category: Category,
             userId: userId
         })
+        await User.update(
+            {
+                totalAmount: totalAmount
+            },{
+                where:{
+                    id:userId
+                }
+            }
+        )
         console.log(Data)
         res.status(201).json({ ...Data, success: true, message: "Successfully Added" })
     } catch (err) {
@@ -51,16 +61,8 @@ exports.deleteExpenseData = async (req, res, next) => {
 exports.LeaderBoardData = async (req, res, next) => {
     try {
         const user = await User.findAll({
-            attributes: ['id', "name", [sequelize.fn('SUM', sequelize.col('expense_data.Amount')), 'totalAmount']],
-            include: [
-                { model: ExpenseData, attributes: [] }
-            ],
-            group: ["user.id"],
             order: [["totalAmount", "DESC"]]
         })
-
-        console.log(user, "USER DATA")
-
         res.status(200).json([...user])
         res.end()
     } catch (err) {

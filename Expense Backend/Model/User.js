@@ -22,7 +22,11 @@ const User=sequelize.define("user",{
         type:Sequelize.STRING,
         allowNull:false
     },
-    isprimiumUser:Sequelize.BOOLEAN
+    isprimiumUser:Sequelize.BOOLEAN,
+    totalAmount:{
+        type:Sequelize.DOUBLE,
+        defaultValue:0
+    }
 });
 
 module.exports=User
