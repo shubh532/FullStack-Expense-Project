@@ -173,8 +173,8 @@ const AddRowToTable=(data, Rank)=>{
         document.createElement("td"),
     ]
     td[0].textContent = Rank
-    td[1].textContent = data.Name
-    td[2].textContent = data.Amount
+    td[1].textContent = data.name
+    td[2].textContent = `${data.totalAmount}`
     td.forEach((ele) => {
         tr.appendChild(ele)
     })

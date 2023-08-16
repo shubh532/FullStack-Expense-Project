@@ -1,6 +1,6 @@
-const { Sequelize } = require("sequelize")
 const ExpenseData = require("../Model/Expense")
 const User = require("../Model/User")
+const sequelize = require("../Util/Database")
 
 
 exports.getData = async (req, res, next) => {
@@ -50,33 +50,20 @@ exports.deleteExpenseData = async (req, res, next) => {
 
 exports.LeaderBoardData = async (req, res, next) => {
     try {
-        const data = await ExpenseData.findAll()
-        const user = await User.findAll()
-        const mergeData = []
-        data.forEach(data => {
-            const userId = data.dataValues.userId
-            if (mergeData[userId]) {
-                mergeData[userId].Amount += mergeData[userId].Amount
-            } else {
-                const Amount = data.dataValues.Amount
-                mergeData[userId] = { Amount: Amount }
-            }
-        });
-        user.forEach(user => {
-            const userId = user.dataValues.id
-            const Name = user.dataValues.Name
-            if (mergeData[userId]) {
-                mergeData[userId] = { ...mergeData[userId], Name: Name }
-            } else {
-                mergeData[userId] = { Amount: 0, Name: Name }
-            }
+        const user = await User.findAll({
+            attributes: ['id', "name", [sequelize.fn('SUM', sequelize.col('expense_data.Amount')), 'totalAmount']],
+            include: [
+                { model: ExpenseData, attributes: [] }
+            ],
+            group: ["user.id"],
+            order: [["totalAmount", "DESC"]]
         })
-        const mergeArray = Object.entries(mergeData).map(([userId, user]) => ({ userId, ...user }));
-        const sortedData = mergeArray.sort((a, b) => b.Amount - a.Amount);
-        console.log(sortedData)
-        console.log(mergeData)
-        res.status(200).json([ ...sortedData ])
-    }catch(err){
+
+        console.log(user, "USER DATA")
+
+        res.status(200).json([...user])
+        res.end()
+    } catch (err) {
         console.log(err)
         res.status(500).json({ message: "Server Error" })
     }
