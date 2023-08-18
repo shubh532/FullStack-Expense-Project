@@ -103,8 +103,9 @@ function AddDataToTable(data) {
 }
 
 async function deletehandler(id, parenteId, ele) {
+    const tokenId = localStorage.getItem("tokenId")
     try {
-        const response = await axios.delete(`http://localhost:4000/deleteExpense/${id}`)
+        const response = await axios.delete(`http://localhost:4000/deleteExpense/${id}`,{ headers: { "Authorization": tokenId } })
         if (response.status === 200) {
             console.log(response)
             document.getElementById(parenteId).removeChild(ele)

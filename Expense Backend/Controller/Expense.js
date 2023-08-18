@@ -18,28 +18,31 @@ exports.getData = async (req, res, next) => {
 }
 
 exports.postExpnseData = async (req, res, next) => {
+    const t = await sequelize.transaction()
     const { Amount, Description, Category, userId } = req.body
-    const prevTotal=req.user.totalAmount
-    const totalAmount=Number(prevTotal)+Number(Amount)
+    const prevTotal = req.user.totalAmount
+    const totalAmount = Number(prevTotal) + Number(Amount)
     try {
         const Data = await ExpenseData.create({
             Amount: Amount,
             Description: Description,
             Category: Category,
             userId: userId
-        })
+        }, { transaction: t })
+
         await User.update(
             {
                 totalAmount: totalAmount
-            },{
-                where:{
-                    id:userId
-                }
-            }
+            }, {
+            where: { id: userId },
+            transaction: t
+        }
         )
-        console.log(Data)
+        // console.log(Data)
+        await t.commit()
         res.status(201).json({ ...Data, success: true, message: "Successfully Added" })
     } catch (err) {
+        await t.rollback()
         console.log(err)
         res.status(500).json({ message: "Server Error" })
     }
@@ -47,12 +50,24 @@ exports.postExpnseData = async (req, res, next) => {
 
 exports.deleteExpenseData = async (req, res, next) => {
     const id = req.params.id
-    console.log(id, "sdsfs")
+    // console.log(id,">>>>>>>>id")
+    const prevTotal = req.user.totalAmount
+    const t = await sequelize.transaction()
     try {
-        const data = await ExpenseData.findOne({ where: { id: id } })
+        const data = await ExpenseData.findOne({ where: { id: id }, transaction: t })
+        // console.log("dta>>>>>",data)
+        const Amount= data.dataValues.Amount
+        const userId= data.dataValues.userId
+        const totalAmount = Number(prevTotal) - Number(Amount)
+        await User.update(
+            { totalAmount: totalAmount },
+            { where: { id: userId }, transaction: t }
+        )
+        t.commit()
         data.destroy()
         res.status(200).json({ message: "Data Deleted" })
     } catch (err) {
+        t.rollback()
         console.log(err)
         res.status(500).json({ message: "Server Error" })
     }

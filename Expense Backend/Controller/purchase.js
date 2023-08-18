@@ -6,13 +6,14 @@ const Order = require("../Model/Order")
 exports.purschasepremium = async (req, res) => {
     try {
         var rzp = new Razorpay({
-            key_id: "rzp_test_tg0UTn2qn9Co1z",
-            key_secret: "EeHKrOv4fceRVSUvbzIA2QD1"
+            key_id: "rzp_test_ktODwZetELWdc1",
+            key_secret: "Vp7mvH5Zu4O5TA3Q2eF3a1ws"
         })
         const amount = 2000;
 
         rzp.orders.create({ amount, currency: "INR" }, (err, order) => {
             if (err) {
+                console.log(err,">>>>>>>>>>>>ERRR")
                 throw new Error(JSON.stringify(err))
             }
             req.user.createOrder({ orderid: order.id, status: "PENDING" }).then(() => {

@@ -6,7 +6,7 @@ const ExpnseController = require("../Controller/Expense")
 
 ExpenseRoutes.get("/getExpense_data", Authentication, ExpnseController.getData)
 ExpenseRoutes.post("/postExpense",Authentication, ExpnseController.postExpnseData)
-ExpenseRoutes.delete("/deleteExpense/:id", ExpnseController.deleteExpenseData)
+ExpenseRoutes.delete("/deleteExpense/:id",Authentication, ExpnseController.deleteExpenseData)
 ExpenseRoutes.get("/leaderBoard", ExpnseController.LeaderBoardData)
 
 

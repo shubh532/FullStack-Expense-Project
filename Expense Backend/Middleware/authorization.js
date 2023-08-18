@@ -10,8 +10,10 @@ const Authenticate = (req, res, next) => {
         // console.log("user>>.. ",user)
         User.findByPk(user.userId).then(user => {
             // console.log("user>>", JSON.stringify(user))
-            req.user = user
-            next()
+            if(user){
+                req.user = user
+                next()
+            }
         }).catch(err => { throw new Error(err) })
 
     } catch (err) {
