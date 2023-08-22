@@ -1,8 +1,11 @@
 const ExpAuthData = require("../Model/User")
+const PasswaordResetReq = require("../Model/PRRequest")
 const bcrypt = require("bcrypt")
 const saltRounds = 10
 const jwt = require("jsonwebtoken")
+const { v4: uuidv4 } = require('uuid');
 const API_KEY = process.env.BREVO_API_KEY
+const Password_Link = process.env.PASSWORD_Link
 let SibApiV3Sdk = require('sib-api-v3-sdk');
 
 
@@ -71,14 +74,11 @@ exports.getAuthData = async (req, res, next) => {
 
 
 exports.postForgotpassWord = async (req, res, next) => {
-    console.log(req.body.email)
-    const email = req.body.email
+    const { email, userId } = req.body
+    const uuid = uuidv4()
     let Client = SibApiV3Sdk.ApiClient.instance;
     let apiKey = Client.authentications['api-key'];
     apiKey.apiKey = API_KEY
-    console.log(API_KEY,"API KEY<<<<<<<<<<")
-    // res.status(200).json({ message: "Work Fine,.........." })
-
     let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
     const Sender = {
         email: "shubhammahulkar2000@gmail.com",
@@ -88,16 +88,77 @@ exports.postForgotpassWord = async (req, res, next) => {
         email: email
     }]
     try {
+        await PasswaordResetReq.create({
+            id: uuid,
+            isActive: true,
+            userId: userId
+        })
         const result = await apiInstance.sendTransacEmail({
             Sender,
             to: receivers,
             subject: "Tetsing Mail",
             textContent: "This is testing mail",
-            htmlContent: "<a href='www.google.com'>Reset Passwaord</a>"
+            htmlContent: `<a href=${Password_Link}/${uuid}>Reset Passwaord</a>`
         })
-        console.log({ result: result, message:"Successfull" })
+        console.log({ result: result, message: "Successfull" })
         res.end()
     } catch (err) {
         console.log(err, "<<<<<<<<<<ERRRR")
     }
+}
+
+exports.getResetPassword = async (req, res, next) => {
+    const uuid = req.params.uuid
+    try {
+        const User = await PasswaordResetReq.findOne({ where: { id: uuid } })
+        const isActive = User.dataValues.isActive
+        const userId = User.dataValues.userId
+        if (isActive) {
+            return res.render("ResetPassword", { userId: userId })
+        } else {
+            res.status(403).json({ message: "Unauthorized" })
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "ResetPassword Server Error" })
+    }
+
+}
+
+exports.postUpdatePassword = async (req, res, next) => {
+    const id = req.params.userId
+    const { password, confirmpassword, userId } = req.body
+    console.log(id,"req.req.params.uuid")
+
+    try {
+        const user = await ExpAuthData.findOne({ where: { id: userId } })
+        if (!user) {
+            return res.status(404), json({ message: "User Not Found" })
+        } else {
+            bcrypt.hash(password, saltRounds, async (err, hash) => {
+                if (err) {
+                    throw new Error(" Somthing Went Wrong")
+                } else {
+                    await user.update({
+                        password: hash
+                    }, {
+                        where: { id: userId }
+                    })
+                    const u =await PasswaordResetReq.update({
+                        isActive:false
+                    },{
+                        where:{userId:id}
+                    })
+                    console.log(u,"userknknv")
+
+                }
+                res.status(200).json({ message: "Password Successfully Updated" })
+            })
+        }
+    } catch (err) {
+        console.log(err, " err from postUpdatePassword")
+        res.status(500).json({ message: "Server Error" })
+    }
+
 }
