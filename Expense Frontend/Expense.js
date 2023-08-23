@@ -6,14 +6,14 @@ window.addEventListener("DOMContentLoaded", async () => {
         const tokenId = localStorage.getItem("tokenId")
         const response = await axios.get("http://localhost:4000/getExpense_data", { headers: { "Authorization": tokenId } })
 
-        console.log(response)
         IsPremiumUser = response.data.user.primeUser
         ConvertPrimeMember(IsPremiumUser)
         const Data = response.data.data
         for (key in Data) {
             AddDataToTable(Data[key])
         }
-
+        AddMonthWiseData(Data)
+        AddYearlyData(Data)
         IsLoadingHandler(false)
     } catch (err) {
         IsLoadingHandler(false)
@@ -38,15 +38,15 @@ const IsLoadingHandler = (isLoading) => {
 const ConvertPrimeMember = () => {
     const premiumBtn = document.getElementById("premiumBtn")
     const premiumUser = document.getElementById("premiumUser")
-    const LeaderBoard= document.getElementById("LeadeBrdContainer")
+    const LeaderBoard = document.getElementById("LeadeBrdContainer")
     if (IsPremiumUser) {
-        premiumUser.style.display = "block"
+        premiumUser.style.display = "contents"
         premiumBtn.style.display = "none"
-        LeaderBoard.style.display= "Block"
+        LeaderBoard.style.display = "Block"
     } else {
         premiumUser.style.display = "none"
         premiumBtn.style.display = "block"
-        LeaderBoard.style.display= "none"
+        LeaderBoard.style.display = "none"
     }
 }
 
@@ -64,7 +64,7 @@ AddBtn.onclick = async (e) => {
     }
     try {
         console.log(ExpnseData)
-        const response = await axios.post("http://localhost:4000/postExpense", { ...ExpnseData },{ headers: { "Authorization": tokenId } })
+        const response = await axios.post("http://localhost:4000/postExpense", { ...ExpnseData }, { headers: { "Authorization": tokenId } })
         data = response.data.dataValues
         console.log(response)
         AddDataToTable(data)
@@ -105,7 +105,7 @@ function AddDataToTable(data) {
 async function deletehandler(id, parenteId, ele) {
     const tokenId = localStorage.getItem("tokenId")
     try {
-        const response = await axios.delete(`http://localhost:4000/deleteExpense/${id}`,{ headers: { "Authorization": tokenId } })
+        const response = await axios.delete(`http://localhost:4000/deleteExpense/${id}`, { headers: { "Authorization": tokenId } })
         if (response.status === 200) {
             console.log(response)
             document.getElementById(parenteId).removeChild(ele)
@@ -157,17 +157,17 @@ const ShowContent = (show) => {
 }
 
 const LeaderBDBtn = document.getElementById("LeaderBdBtn")
-LeaderBDBtn.onclick=async()=>{
-    const response=await axios.get("http://localhost:4000/leaderBoard")
+LeaderBDBtn.onclick = async () => {
+    const response = await axios.get("http://localhost:4000/leaderBoard")
     const Data = response.data
     console.log(Data)
-    Data.map((data, index)=>{
-        AddRowToTable(data, index+1)
+    Data.map((data, index) => {
+        AddRowToTable(data, index + 1)
     })
     ShowContent(true)
 }
 
-const AddRowToTable=(data, Rank)=>{
+const AddRowToTable = (data, Rank) => {
     let tbody = document.getElementById("LeadBdBody")
     let tr = document.createElement("tr")
     let td = [
@@ -182,4 +182,66 @@ const AddRowToTable=(data, Rank)=>{
         tr.appendChild(ele)
     })
     tbody.appendChild(tr)
+}
+
+function getDate(inputDate) {
+    const dateObj = new Date(inputDate);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const formattedDate = dateObj.toLocaleDateString('en-US', options);
+    return formattedDate
+}
+
+const AddMonthWiseData = (data) => {
+    for (key in data) {
+        let tbody = document.getElementById("Monthlytbody")
+        let tr = document.createElement("tr")
+        let td = [
+            document.createElement("td"),
+            document.createElement("td"),
+            document.createElement("td"),
+            document.createElement("td")
+        ]
+        td[0].textContent = getDate(data[key].createdAt)
+        td[1].textContent = data[key].Description
+        td[2].textContent = data[key].Category
+        td[3].textContent = data[key].Amount
+        td.forEach((ele) => {
+            tr.appendChild(ele)
+        })
+        tbody.insertBefore(tr, tbody.firstChild)
+    }
+}
+
+
+const getYearlyData = (data) => {
+    const totalDataByMonth = {};
+    for (key in data) {
+        const date = getDate(data[key].createdAt)
+        if (!totalDataByMonth[date]) {
+            totalDataByMonth[date] = 0;
+        }
+        totalDataByMonth[date] += data[key].Amount;
+    }
+    return totalDataByMonth
+};
+
+const AddYearlyData = (data) => {
+    const Data = getYearlyData(data)
+    console.log(Data)
+    for (key in Data) {
+        let tbody = document.getElementById("Yearlytbody")
+        let tr = document.createElement("tr")
+        let td = [
+            document.createElement("td"),
+            document.createElement("td"),
+            document.createElement("td"),
+        ]
+        td[0].textContent = getDate(key)
+        td[1].textContent = "__"
+        td[2].textContent = Data[key]
+        td.forEach((ele) => {
+            tr.appendChild(ele)
+        })
+        tbody.insertBefore(tr, tbody.firstChild)
+    }
 }

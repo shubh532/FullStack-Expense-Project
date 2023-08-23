@@ -30,7 +30,10 @@
         <div class="upperdiv">
             <div class="header">
                 <h2>Welcome to Expense Tracker</h2>
-                <h3 id="premiumUser">Premium Member</h3>
+                <div id="premiumUser">
+                    <h3>Premium Member</h3>
+                    <button>Download</button>
+                </div>
                 <button id="premiumBtn">Premium</button>
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
             </div>
@@ -80,7 +83,7 @@
                     <button id="LeaderBdBtn">Leader Board </button>
                 </div>
                 <div class="LeadBdTable">
-                    <table id="leaderTbl" style="display: none;">
+                    <table id="leaderTbl">
                         <thead>
                             <tr>
                                 <th>Rank</th>
@@ -94,6 +97,41 @@
                     <h2 id="messsage">Click on Button To Show</h2>
                 </div>
             </div>
+        </div>
+        <div class="ExpReport">
+            <h1>Expense Report</h1>
+            <div class="RportContainer ">
+                <div class="MonthlyBasis tableContainer">
+                    <h3>Daily Basis Report</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Expense</th>
+                            </tr>
+                        </thead>
+                        <tbody id="Monthlytbody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="YearlyBasis tableContainer">
+                    <h3>Monthly Basis Report</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Income</th>
+                                <th>Expense</th>
+                            </tr>
+                        </thead>
+                        <tbody id="Yearlytbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>

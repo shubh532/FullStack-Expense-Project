@@ -14,7 +14,7 @@ body {
     height: 100%;
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 3rem 6rem 36rem;
+    grid-template-rows: 3rem 6rem 35.7rem 44.7rem;
 }
 
 .upperdiv {
@@ -90,7 +90,8 @@ body {
     outline: none;
 }
 
-.signupBtn,.LeadBdHead button {
+.signupBtn,
+.LeadBdHead button {
     color: aliceblue;
     padding: 10px 15px;
     font-size: 1rem;
@@ -102,33 +103,40 @@ body {
     border-radius: 4px;
 }
 
-.signupBtn:hover,.LeadBdHead button:hover {
+.signupBtn:hover,
+.LeadBdHead button:hover {
     background-color: rgb(0, 203, 145);
     box-shadow: 0px 0px 2px 1px rgb(124, 124, 124);
 }
 
-.tableContainer,.LeadeBrdContainer {
+.tableContainer,
+.LeadeBrdContainer {
     border: 2px solid rgb(155, 155, 155);
     overflow-y: auto;
     width: 40%;
-    height: 100%;
+    height: 93%;
     overflow: auto;
 }
-.LeadBdHead{
+
+.LeadBdHead {
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: space-between;
     margin: 10px 20px;
 }
-.LeadeBrdContainer,.tableContainer{
-    margin: 20px;
+
+.LeadeBrdContainer,
+.tableContainer {
     box-shadow: 0px 0px 5px 2px rgb(132, 131, 131);
     border-radius: 8px;
 }
-.LeadBdTable{
-    margin:00px 15px;
+
+.LeadBdTable {
+    margin: 00px 15px;
 }
-.tableContainer table,.LeadBdTable table {
+
+.tableContainer table,
+.LeadBdTable table {
     width: 100%;
 }
 
@@ -141,11 +149,34 @@ body {
 
 .tableContainer table,
 th,
-td,.LeadBdTable table {
+td,
+.LeadBdTable table {
     border-collapse: collapse;
     padding: 2px;
     text-align: center;
 }
+
+.ExpReport {
+    padding: 10px 40px;
+}
+
+.RportContainer {
+    height: 92.5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.MonthlyBasis,
+.YearlyBasis {
+    margin-top: 1rem;
+    border: 2px solid green;
+    height: 100%;
+    width: 33%;
+    text-align: center;
+}
+
 .btns {
     display: flex;
     align-items: center;
@@ -208,17 +239,20 @@ td,.LeadBdTable table {
     body {
         height: 100vh;
     }
+
     .main {
         grid-template-rows: 2.5rem 16rem auto;
     }
+
     .tableContainer {
         width: 100%;
         font-size: 1px;
         height: 100%;
     }
-    .LeadeBrdContainer{
+
+    .LeadeBrdContainer {
         width: 100%;
-        font-size:small;
+        font-size: small;
         height: 100%;
     }
 
