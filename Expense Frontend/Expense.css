@@ -129,6 +129,7 @@ body {
 .tableContainer {
     box-shadow: 0px 0px 5px 2px rgb(132, 131, 131);
     border-radius: 8px;
+    position: relative;
 }
 
 .LeadBdTable {
@@ -220,6 +221,26 @@ td,
     justify-content: center;
     align-items: center;
 }
+.Pagination{
+    /* border: 2px solid; */
+    width: 25%;
+    position: absolute;
+    top: 92%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.Pagination button{
+    width: 30px;
+    border-radius: 4px;
+    border: 2px solid rgb(109, 178, 218);
+    background-color: rgb(210, 233, 242);
+    cursor: pointer;
+}
+
 
 ::-webkit-scrollbar {
     width: 5px;

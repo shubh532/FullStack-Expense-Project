@@ -6,11 +6,23 @@ const uploadToS3 = require("../Services/AWS_S3")
 exports.getData = async (req, res, next) => {
     // console.log("req use>>>>>>>",req.user)
     const id = req.user.id
+    const page = req.query.page
+    console.log(typeof(page),"page")
+    const Items_per_page = 10
     try {
-        const dataPromise = ExpenseData.findAll({ where: { userId: id } })
+        const totalItems = ExpenseData.count({ where: { userId: id } })
+        const dataPromise = ExpenseData.findAll({ where: { userId: id }, offset: (page - 1)*Items_per_page, limit: Items_per_page, order: [['createdAt', 'DESC']], })
         const userPromise = User.findOne({ where: { id: id } })
-        const [Data, user] = await Promise.all([dataPromise, userPromise])
-        res.status(200).json({ data: { ...Data }, user: { primeUser: user.isprimiumUser } })
+        const [data, user, totalExpItems] = await Promise.all([dataPromise, userPromise, totalItems])
+        const pageData = {
+            currentPage: page,
+            hasNextPage: Items_per_page * page < totalExpItems,
+            nextPage: parseInt(page) + 1,
+            hasPreviousPage: page > 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalExpItems / Items_per_page)
+        }
+        res.status(200).json({ pageData: pageData, ExpenseData: data, user: { primeUser: user.isprimiumUser } })
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: "Somthing Went Wrong" })
@@ -93,9 +105,9 @@ exports.DownloadFile = async (req, res, next) => {
         const StringiFiedExp = JSON.stringify(data)
         const fileName = `Expense${id}${new Date()}.txt`
         const fileUrl = await uploadToS3(StringiFiedExp, fileName)
-        res.status(200).json({ fileUrl:fileUrl, success: true })
+        res.status(200).json({ fileUrl: fileUrl, success: true })
     } catch (err) {
         console.log(err, "Error from Download File")
-        res.status(500).json({fileUrl:fileUrl , success:false, err:err})
+        res.status(500).json({ fileUrl: fileUrl, success: false, err: err })
     }
 }

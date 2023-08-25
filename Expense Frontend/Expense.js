@@ -1,18 +1,20 @@
 let IsPremiumUser
 const tokenId = localStorage.getItem("tokenId")
 window.addEventListener("DOMContentLoaded", async () => {
+    const page = 1
     IsLoadingHandler(true)
     try {
-        const response = await axios.get("http://localhost:4000/getExpense_data", { headers: { "Authorization": tokenId } })
-
+        const response = await axios.get(`http://localhost:4000/getExpense_data?page=${page}`, { headers: { "Authorization": tokenId } })
+        console.log(response)
         IsPremiumUser = response.data.user.primeUser
         ConvertPrimeMember(IsPremiumUser)
-        const Data = response.data.data
-        for (key in Data) {
-            AddDataToTable(Data[key])
+        const Data = response.data
+        for (key in Data.ExpenseData) {
+            AddDataToTable(Data.ExpenseData[key])
         }
-        AddMonthWiseData(Data)
-        AddYearlyData(Data)
+        addPagination(response.data.pageData)
+        AddMonthWiseData(Data.ExpenseData)
+        AddYearlyData(Data.ExpenseData)
         IsLoadingHandler(false)
     } catch (err) {
         IsLoadingHandler(false)
@@ -73,41 +75,21 @@ AddBtn.onclick = async (e) => {
 }
 
 function AddDataToTable(data) {
-    let tbody = document.getElementById("tbody")
-    let tr = document.createElement("tr")
-    let td = [
-        document.createElement("td"),
-        document.createElement("td"),
-        document.createElement("td"),
-        document.createElement("td")
-
-    ]
-    let EditBtn = document.createElement("button")
-    EditBtn.textContent = "Edit"
-    let DelBtn = document.createElement("button")
-    DelBtn.textContent = "Delete"
-    DelBtn.className = "delbtn"
-    EditBtn.className = "Editbtn"
-    td[0].textContent = data.Amount
-    td[1].textContent = data.Description
-    td[2].textContent = data.Category
-    td[3].appendChild(EditBtn)
-    td[3].appendChild(DelBtn)
-    td[3].className = "btns"
-    td.forEach((ele) => {
-        tr.appendChild(ele)
-    })
-    tbody.insertBefore(tr, tbody.firstChild)
-    DelBtn.onclick = () => deletehandler(data.id, "tbody", tr)
+    tbody.innerHTML +=`<tr id=${data.id}>
+    <td>${data.Amount}</td>
+    <td>${data.Description}</td>
+    <td>${data.Category}</td>
+    <td class="btns"><button class="Editbtn">Edit</button><button onclick="deletehandler(${data.id}, tbody)" class="delbtn">Delet</button></td>
+    </tr>`
 }
 
-async function deletehandler(id, parenteId, ele) {
-    const tokenId = localStorage.getItem("tokenId")
+async function deletehandler(id, parenteId) {
+    const tr = document.getElementById(id)
     try {
         const response = await axios.delete(`http://localhost:4000/deleteExpense/${id}`, { headers: { "Authorization": tokenId } })
         if (response.status === 200) {
             console.log(response)
-            document.getElementById(parenteId).removeChild(ele)
+            parenteId.removeChild(tr)
         }
     } catch (err) {
         alert(err.response.data.message)
@@ -226,7 +208,6 @@ const getYearlyData = (data) => {
 
 const AddYearlyData = (data) => {
     const Data = getYearlyData(data)
-    console.log(Data)
     for (key in Data) {
         let tbody = document.getElementById("Yearlytbody")
         let tr = document.createElement("tr")
@@ -245,18 +226,53 @@ const AddYearlyData = (data) => {
     }
 }
 
-const downloadBtn= document.getElementById("downloadBtn")
+const downloadBtn = document.getElementById("downloadBtn")
 
-downloadBtn.onclick=async ()=>{
-    try{
-        const response = await axios.get("http://localhost:4000/downloadfile",{ headers: { "Authorization": tokenId } })
+downloadBtn.onclick = async () => {
+    try {
+        const response = await axios.get("http://localhost:4000/downloadfile", { headers: { "Authorization": tokenId } })
         const fileUrl = response.data.fileUrl
-        document.body.innerHTML+=`<a id="downloadfile" href=${fileUrl} download hidden>Sfghfhf</a>`
-        const downloadfile=document.getElementById("downloadfile")
+        document.body.innerHTML += `<a id="downloadfile" href=${fileUrl} download hidden>Sfghfhf</a>`
+        const downloadfile = document.getElementById("downloadfile")
         downloadfile.click()
-    }catch(err){
+    } catch (err) {
         console.log(err, "from Download File")
         alert("Somthing Went Wrong")
     }
-    
+
+}
+
+const Pagination = document.getElementById("Pagination")
+function addPagination({currentPage, hasNextPage, nextPage, hasPreviousPage, previousPage, lastPage}) {
+    Pagination.innerHTML = ""
+    if (hasPreviousPage) {
+        const btn2 = document.createElement("button")
+        btn2.innerHTML = `${previousPage}`
+        btn2.addEventListener("click", () => getExpense(previousPage))
+        Pagination.appendChild(btn2)
+    }
+    const btn1 = document.createElement("button")
+    btn1.innerHTML = `${currentPage}`
+    btn1.addEventListener("click", () => getExpense(currentPage))
+    Pagination.appendChild(btn1)
+
+    if(hasNextPage){
+        const btn3 = document.createElement("button")
+        btn3.innerHTML =nextPage
+        btn3.addEventListener("click",()=>getExpense(nextPage))
+        Pagination.appendChild(btn3)
+    }
+}
+
+async function getExpense(page){
+    try {
+        const response = await axios.get(`http://localhost:4000/getExpense_data?page=${page}`, { headers: { "Authorization": tokenId } })
+        const Data = response.data
+        for (key in Data.ExpenseData) {
+            AddDataToTable(Data.ExpenseData[key])
+        }
+        addPagination(response.data.pageData)
+    } catch (err) {
+        document.body.innerHTML += "<h6> SOMETHING WENT WRONG<h6>"
+    }
 }
