@@ -1,7 +1,7 @@
 const ExpenseData = require("../Model/Expense")
 const User = require("../Model/User")
 const sequelize = require("../Util/Database")
-
+const uploadToS3 = require("../Services/AWS_S3")
 
 exports.getData = async (req, res, next) => {
     // console.log("req use>>>>>>>",req.user)
@@ -56,8 +56,8 @@ exports.deleteExpenseData = async (req, res, next) => {
     try {
         const data = await ExpenseData.findOne({ where: { id: id }, transaction: t })
         // console.log("dta>>>>>",data)
-        const Amount= data.dataValues.Amount
-        const userId= data.dataValues.userId
+        const Amount = data.dataValues.Amount
+        const userId = data.dataValues.userId
         const totalAmount = Number(prevTotal) - Number(Amount)
         await User.update(
             { totalAmount: totalAmount },
@@ -83,5 +83,19 @@ exports.LeaderBoardData = async (req, res, next) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({ message: "Server Error" })
+    }
+}
+
+exports.DownloadFile = async (req, res, next) => {
+    const { id } = req.user
+    try {
+        const data = await ExpenseData.findAll({ where: { userId: id } })
+        const StringiFiedExp = JSON.stringify(data)
+        const fileName = `Expense${id}${new Date()}.txt`
+        const fileUrl = await uploadToS3(StringiFiedExp, fileName)
+        res.status(200).json({ fileUrl:fileUrl, success: true })
+    } catch (err) {
+        console.log(err, "Error from Download File")
+        res.status(500).json({fileUrl:fileUrl , success:false, err:err})
     }
 }

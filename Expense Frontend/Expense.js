@@ -1,9 +1,8 @@
 let IsPremiumUser
-
+const tokenId = localStorage.getItem("tokenId")
 window.addEventListener("DOMContentLoaded", async () => {
     IsLoadingHandler(true)
     try {
-        const tokenId = localStorage.getItem("tokenId")
         const response = await axios.get("http://localhost:4000/getExpense_data", { headers: { "Authorization": tokenId } })
 
         IsPremiumUser = response.data.user.primeUser
@@ -244,4 +243,20 @@ const AddYearlyData = (data) => {
         })
         tbody.insertBefore(tr, tbody.firstChild)
     }
+}
+
+const downloadBtn= document.getElementById("downloadBtn")
+
+downloadBtn.onclick=async ()=>{
+    try{
+        const response = await axios.get("http://localhost:4000/downloadfile",{ headers: { "Authorization": tokenId } })
+        const fileUrl = response.data.fileUrl
+        document.body.innerHTML+=`<a id="downloadfile" href=${fileUrl} download hidden>Sfghfhf</a>`
+        const downloadfile=document.getElementById("downloadfile")
+        downloadfile.click()
+    }catch(err){
+        console.log(err, "from Download File")
+        alert("Somthing Went Wrong")
+    }
+    
 }
