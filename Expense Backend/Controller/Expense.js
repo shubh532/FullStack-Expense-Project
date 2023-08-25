@@ -4,11 +4,9 @@ const sequelize = require("../Util/Database")
 const uploadToS3 = require("../Services/AWS_S3")
 
 exports.getData = async (req, res, next) => {
-    // console.log("req use>>>>>>>",req.user)
     const id = req.user.id
     const page = req.query.page
-    console.log(typeof(page),"page")
-    const Items_per_page = 10
+    const Items_per_page = parseInt(req.query.limit)
     try {
         const totalItems = ExpenseData.count({ where: { userId: id } })
         const dataPromise = ExpenseData.findAll({ where: { userId: id }, offset: (page - 1)*Items_per_page, limit: Items_per_page, order: [['createdAt', 'DESC']], })

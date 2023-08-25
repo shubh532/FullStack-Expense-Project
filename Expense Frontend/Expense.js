@@ -1,10 +1,17 @@
 let IsPremiumUser
 const tokenId = localStorage.getItem("tokenId")
+const perPageExp = localStorage.getItem("perPageExp")
 window.addEventListener("DOMContentLoaded", async () => {
+    let PageExpLimit
+    if(perPageExp){
+        PageExpLimit =perPageExp
+    }else{
+        PageExpLimit=10
+    }
     const page = 1
     IsLoadingHandler(true)
     try {
-        const response = await axios.get(`http://localhost:4000/getExpense_data?page=${page}`, { headers: { "Authorization": tokenId } })
+        const response = await axios.get(`http://localhost:4000/getExpense_data?page=${page}&limit=${PageExpLimit}`, { headers: { "Authorization": tokenId } })
         console.log(response)
         IsPremiumUser = response.data.user.primeUser
         ConvertPrimeMember(IsPremiumUser)
@@ -244,6 +251,7 @@ downloadBtn.onclick = async () => {
 
 const Pagination = document.getElementById("Pagination")
 function addPagination({currentPage, hasNextPage, nextPage, hasPreviousPage, previousPage, lastPage}) {
+    // console.log(currentPage, hasNextPage, nextPage, hasPreviousPage, previousPage, lastPage)
     Pagination.innerHTML = ""
     if (hasPreviousPage) {
         const btn2 = document.createElement("button")
@@ -265,8 +273,14 @@ function addPagination({currentPage, hasNextPage, nextPage, hasPreviousPage, pre
 }
 
 async function getExpense(page){
+    let PageExpLimit
+    if(perPageExp){
+        PageExpLimit =perPageExp
+    }else{
+        PageExpLimit=10
+    }
     try {
-        const response = await axios.get(`http://localhost:4000/getExpense_data?page=${page}`, { headers: { "Authorization": tokenId } })
+        const response = await axios.get(`http://localhost:4000/getExpense_data?page=${page}&limit=${perPageExp}`, { headers: { "Authorization": tokenId } })
         const Data = response.data
         for (key in Data.ExpenseData) {
             AddDataToTable(Data.ExpenseData[key])
@@ -275,4 +289,11 @@ async function getExpense(page){
     } catch (err) {
         document.body.innerHTML += "<h6> SOMETHING WENT WRONG<h6>"
     }
+}
+
+const SetBtn =document.getElementById("SetExpPerpage")
+SetBtn.onclick=()=>{
+    const perPageExp = document.getElementById("perPageExpSetter").value
+    localStorage.setItem("perPageExp",perPageExp)
+    getExpense(1)
 }
