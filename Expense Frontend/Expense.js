@@ -47,14 +47,18 @@ const ConvertPrimeMember = () => {
     const premiumBtn = document.getElementById("premiumBtn")
     const premiumUser = document.getElementById("premiumUser")
     const LeaderBoard = document.getElementById("LeadeBrdContainer")
+    const Report = document.getElementById("Report")
     if (IsPremiumUser) {
         premiumUser.style.display = "contents"
         premiumBtn.style.display = "none"
         LeaderBoard.style.display = "Block"
+        Report.style.display ="block"
     } else {
         premiumUser.style.display = "none"
         premiumBtn.style.display = "block"
         LeaderBoard.style.display = "none"
+        Report.style.display = "none"
+
     }
 }
 

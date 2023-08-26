@@ -6,8 +6,8 @@ const Order = require("../Model/Order")
 exports.purschasepremium = async (req, res) => {
     try {
         var rzp = new Razorpay({
-            key_id: "rzp_test_ktODwZetELWdc1",
-            key_secret: "Vp7mvH5Zu4O5TA3Q2eF3a1ws"
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET
         })
         const amount = 2000;
 
